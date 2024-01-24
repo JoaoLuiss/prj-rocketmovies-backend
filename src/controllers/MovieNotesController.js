@@ -23,6 +23,36 @@ class MovieNotesController {
 
     return response.json();
   }
+
+  async update(request, response) {
+    const { title, description, rating, user_id } = request.body;
+    const { id } = request.params;
+    const validator = new Validator();
+
+    // validate user_id
+    await validator.validateUser(user_id);
+
+    // validate if notes_id is related to the user_id
+    const note = await knex('movie_notes')
+      .where({ id })
+      .andWhere({ user_id })
+      .first();
+    if (!note) {
+      throw new AppError(
+        `Não foi encontrada uma nota de id = {${id}} relacionada a um usuário de id = {${user_id}}`
+      );
+    }
+
+    // validate rating
+    const filteredRating = validator.validateRating(rating);
+
+    // update movie_note on database
+    await knex('movie_notes')
+      .where({ id })
+      .update({ title, description, rating: filteredRating });
+
+    return response.json();
+  }
 }
 
 module.exports = MovieNotesController;
