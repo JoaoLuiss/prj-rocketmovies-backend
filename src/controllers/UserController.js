@@ -32,7 +32,7 @@ class UserController {
   async update(request, response) {
     const { name, email, password, new_password } = request.body;
     const { id } = request.params;
-
+    
     // verify id provided by request params
     const user = await knex('users').where({ id }).first();
     if (!user) {
@@ -49,7 +49,7 @@ class UserController {
         'Este e-mail já está sendo utilizado por outro usuário.',
         409
       );
-    }
+}
 
     // validate password
     if (new_password && !password) {
@@ -63,7 +63,7 @@ class UserController {
           401
         );
       } else {
-        const hashedPassword = hash(new_password, 8);
+        const hashedPassword = await hash(new_password, 8);
         user.password = hashedPassword;
       }
     }
