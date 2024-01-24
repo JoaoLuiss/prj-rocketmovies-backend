@@ -1,22 +1,16 @@
 const AppError = require('../utils/AppError');
 const knex = require('../database/knex');
 const { hash, compare } = require('bcryptjs');
+const Validator = require('../utils/Validator');
 
 class UserController {
   async create(request, response) {
     const { name, email, password } = request.body;
 
-    // validate if new email is not registered by other user
-    const emailInUse = await knex('users')
-      .select('email')
-      .where({ email })
-      .first();
-    if (emailInUse) {
-      throw new AppError(
-        'Este e-mail já está sendo utilizado por outro usuário.',
-        409
-      );
-    }
+    const validator = new Validator();
+
+    // validate if the new email is available to be registred
+    await validator.validateEmail(email);
 
     const hashedPassword = await hash(password, 8);
 
@@ -32,24 +26,16 @@ class UserController {
   async update(request, response) {
     const { name, email, password, new_password } = request.body;
     const { id } = request.params;
-    
+    const validator = new Validator();
+
     // verify id provided by request params
     const user = await knex('users').where({ id }).first();
     if (!user) {
       throw new AppError(`Nenhum usuário encontrado com o id = ${id}`, 404);
     }
 
-    // validate if new email is not registered by other user
-    const userWithEmail = await knex('users')
-      .select('id', 'email')
-      .where({ email })
-      .first();
-    if (userWithEmail && userWithEmail.id !== user.id) {
-      throw new AppError(
-        'Este e-mail já está sendo utilizado por outro usuário.',
-        409
-      );
-}
+    // validate if new email is not registered by another user
+    await validator.validateEmail(email, id);
 
     // validate password
     if (new_password && !password) {

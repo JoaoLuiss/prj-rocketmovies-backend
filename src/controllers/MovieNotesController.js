@@ -1,34 +1,23 @@
 const knex = require('../database/knex');
 const AppError = require('../utils/AppError');
+const Validator = require('../utils/Validator');
 
 class MovieNotesController {
   async create(request, response) {
     const { title, description, rating, user_id } = request.body;
+    const validator = new Validator();
 
     // validate user_id — must exist
-    const user = await knex('users').where({ id: user_id }).first();
-    if (!user) {
-      throw new AppError(`Nenhum usuário encontrado o id = ${user_id}`, 404);
-    }
+    await validator.validateUser(user_id);
 
     // validate rating — must be an integer between 0 and 5
-    const filteredRating = Number.parseFloat(rating);
-    if (
-      !Number.isInteger(filteredRating) ||
-      filteredRating > 5 ||
-      filteredRating < 0
-    ) {
-      throw new AppError(
-        'A avaliação deve ser um número inteiro entre 0 e 5.',
-        422
-      );
-    }
+    const filteredRating = validator.validateRating(rating);
 
-    // insert new movie note on database
+    // insert new movie_note on database
     await knex('movie_notes').insert({
       title,
       description,
-      rating,
+      rating: filteredRating,
       user_id,
     });
 
