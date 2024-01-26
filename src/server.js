@@ -6,6 +6,7 @@ const routes = require('./routes');
 
 knexMigrationsRun();
 
+const PORT = 3333;
 const app = express();
 app.use(express.json());
 app.use(routes);
@@ -17,11 +18,11 @@ app.use((error, request, response, next) => {
     });
   }
   console.error(error);
+  console.log(`Server is running on PORT: ${PORT}`);
   return response.status(500).json({
     status: 'error',
     message: 'internal server error',
   });
 });
 
-const PORT = 3333;
 app.listen(PORT, () => console.log(`Server is running on PORT: ${PORT}`));
