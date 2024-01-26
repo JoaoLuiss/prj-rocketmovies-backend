@@ -47,9 +47,12 @@ class MovieNotesController {
     const filteredRating = validator.validateRating(rating);
 
     // update movie_note on database
-    await knex('movie_notes')
-      .where({ id })
-      .update({ title, description, rating: filteredRating });
+    await knex('movie_notes').where({ id }).update({
+      title,
+      description,
+      rating: filteredRating,
+      updated_at: knex.fn.now(),
+    });
 
     return response.json();
   }
