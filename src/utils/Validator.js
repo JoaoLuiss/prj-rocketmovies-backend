@@ -79,6 +79,24 @@ class Validator {
       );
     }
   }
+
+  /**
+   * Validate an id of the movie_notes table
+   *
+   * @async
+   * @function
+   * @param {string|number} movie_note_id The id to be validated.
+   * @throws {AppError} If no note is found with the provided id.
+   * @returns {Promise} If id is valid, returns an object representing the note with the provided id.
+   */
+  async validateMovieNoteId(movie_note_id) {
+    const note = knex('movie_notes').where({ id: movie_note_id }).first();
+    if (!note) {
+      throw new AppError(`Nenhuma nota encontrada com o id = {${movie_note_id}}`);
+    }
+
+    return note;
+  }
 }
 
 module.exports = Validator;

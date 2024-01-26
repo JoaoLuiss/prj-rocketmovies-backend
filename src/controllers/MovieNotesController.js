@@ -56,6 +56,42 @@ class MovieNotesController {
 
     return response.json();
   }
+
+  async delete(request, response) {
+    const { id } = request.params;
+    const validator = new Validator();
+
+    // Validate movie_notes {id}
+    await validator.validateMovieNoteId(id);
+
+    // Delete respective movie_note from the database
+    await knex('movie_notes').where({ id }).first().del();
+
+    return response.json();
+  }
+
+  async show(request, response) {
+    const { id } = request.params;
+    const validator = new Validator();
+
+    // Validate movie_notes {id}
+    const note = await validator.validateMovieNoteId(id);
+
+    return response.json(note);
+  }
+
+  async index(request, response) {
+    const { user_id } = request.query;
+    const validator = new Validator();
+
+    // Validate user_id
+    await validator.validateUser(user_id);
+
+    // Search all notes associated with that user
+    const notes = await knex('movie_notes').where({ user_id });
+
+    return response.json(notes);
+  }
 }
 
 module.exports = MovieNotesController;
