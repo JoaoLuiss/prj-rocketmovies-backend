@@ -92,7 +92,9 @@ class Validator {
   async validateMovieNoteId(movie_note_id) {
     const note = knex('movie_notes').where({ id: movie_note_id }).first();
     if (!note) {
-      throw new AppError(`Nenhuma nota encontrada com o id = {${movie_note_id}}`);
+      throw new AppError(
+        `Nenhuma nota encontrada com o id = {${movie_note_id}}`
+      );
     }
 
     return note;
