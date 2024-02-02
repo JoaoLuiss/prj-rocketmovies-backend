@@ -97,6 +97,29 @@ class Validator {
 
     return note;
   }
+
+  /**
+   * Validates if the note_id and the user_id are related in any movie_notes register.
+   *
+   * @async
+   * @param {number} note_id Note id to check registration and relationship.
+   * @param {number} user_id User id to check registration and relationship.
+   * @throws {AppError} Throws an error if no note is found related to the user_id.
+   * @returns {Promise<Object>} A Promise that resolves to an object representing the note associated with the user_id.
+   */
+  async validateRelationshipNoteIdAndUserId(note_id, user_id) {
+    const note = await knex('movie_notes')
+      .where({ id: note_id })
+      .andWhere({ user_id })
+      .first();
+    if (!note) {
+      throw new AppError(
+        `Não foi encontrada uma nota de id = {${id}} relacionada a um usuário de id = {${user_id}}`
+      );
+    }
+
+    return note;
+  }
 }
 
 module.exports = Validator;

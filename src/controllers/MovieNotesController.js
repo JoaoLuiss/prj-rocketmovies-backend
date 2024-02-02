@@ -32,16 +32,8 @@ class MovieNotesController {
     // validate user_id
     await validator.validateUser(user_id);
 
-    // validate if notes_id is related to the user_id
-    const note = await knex('movie_notes')
-      .where({ id })
-      .andWhere({ user_id })
-      .first();
-    if (!note) {
-      throw new AppError(
-        `Não foi encontrada uma nota de id = {${id}} relacionada a um usuário de id = {${user_id}}`
-      );
-    }
+    // validate if note id is related to the user_id
+    await validator.validateRelationshipNoteIdAndUserId(id, user_id);
 
     // validate rating
     const filteredRating = validator.validateRating(rating);
