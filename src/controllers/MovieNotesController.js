@@ -62,7 +62,7 @@ class MovieNotesController {
     const validator = new Validator();
 
     // Validate movie_notes {id}
-    await validator.validateMovieNoteId(id);
+    await validator.validateNoteId(id);
 
     // Delete respective movie_note from the database
     await knex('movie_notes').where({ id }).first().del();
@@ -75,7 +75,7 @@ class MovieNotesController {
     const validator = new Validator();
 
     // Validate movie_notes {id}
-    const note = await validator.validateMovieNoteId(id);
+    const note = await validator.validateNoteId(id);
 
     return response.json(note);
   }

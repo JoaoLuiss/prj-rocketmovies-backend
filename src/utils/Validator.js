@@ -85,14 +85,14 @@ class Validator {
    *
    * @async
    * @function
-   * @param {string|number} movie_note_id The id to be validated.
+   * @param {string|number} note_id The id to be validated.
    * @throws {AppError} If no note is found with the provided id.
    * @returns {Promise} If id is valid, returns an object representing the note with the provided id.
    */
-  async validateMovieNoteId(movie_note_id) {
-    const note = await knex('movie_notes').where({ id: movie_note_id }).first();
+  async validateNoteId(note_id) {
+    const note = await knex('movie_notes').where({ id: note_id }).first();
     if (!note) {
-      throw new AppError(`Nenhuma nota encontrada com o id = {${movie_note_id}}`);
+      throw new AppError(`Nenhuma nota encontrada com o id = {${note_id}}`);
     }
 
     return note;
