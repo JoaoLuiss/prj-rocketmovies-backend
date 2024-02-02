@@ -64,7 +64,7 @@ class Validator {
    * @return {Promise<void>} A void promise that resolves if the email is not in use.
    */
   async validateEmail(email, user_id) {
-    const query = knex('users').select('id', 'email');
+    const query = await knex('users').select('id', 'email');
 
     if (user_id) {
       query.whereNot({ id: user_id });
@@ -90,11 +90,9 @@ class Validator {
    * @returns {Promise} If id is valid, returns an object representing the note with the provided id.
    */
   async validateMovieNoteId(movie_note_id) {
-    const note = knex('movie_notes').where({ id: movie_note_id }).first();
+    const note = await knex('movie_notes').where({ id: movie_note_id }).first();
     if (!note) {
-      throw new AppError(
-        `Nenhuma nota encontrada com o id = {${movie_note_id}}`
-      );
+      throw new AppError(`Nenhuma nota encontrada com o id = {${movie_note_id}}`);
     }
 
     return note;
